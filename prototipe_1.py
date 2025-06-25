@@ -2,9 +2,13 @@ import instaloader
 import re
 import requests
 from bs4 import BeautifulSoup
+import os
 
 
-def download_reel(reel_url):
+def download_reel(reel_url, download_dir):
+    # Create a download dir
+    os.makedirs(download_dir, exist_ok=True)
+
     # Extract shortcode from URL
     shortcode = re.search(r'(?:reels|p)/([A-Za-z0-9_-]{10,12})', reel_url).group(1)
 
@@ -15,7 +19,8 @@ def download_reel(reel_url):
         download_videos=True,
         download_geotags=False,
         download_comments=False,
-        compress_json=False
+        compress_json=False,
+        dirname_pattern=download_dir
     )
 
     try:
@@ -36,7 +41,7 @@ if __name__ == "__main__":
     if not re.match(r'https?://(www\.)?instagram\.com/(reels|p)/', reel_url):
         print("Invalid URL. Must be an Instagram Reel link.")
     else:
-        download_reel(reel_url)
+        download_reel(reel_url, 'C:\Users\IL\Desktop\reels')
 
 import requests
 
