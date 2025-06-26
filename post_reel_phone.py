@@ -9,14 +9,14 @@ import time
 
 def post_reel_with_selenium(video_path, username, password, caption):
     # Set mobile emulation
-    mobile_emulation = {"deviceName": "iPhone 12 Pro"}
+    # mobile_emulation = {"deviceName": "iPhone 12 Pro"}
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--lang=en-US")  # Set browser UI language
     chrome_options.add_argument("--accept-lang=en")  # Set HTTP Accept-Language header
     chrome_options.add_experimental_option('prefs', {
         'intl.accept_languages': 'en,en_US',  # Set internal Chrome language
     })
-    chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+    # chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
     driver = webdriver.Chrome(options=chrome_options)
@@ -24,27 +24,37 @@ def post_reel_with_selenium(video_path, username, password, caption):
 
     try:
         # Open Instagram
-        driver.get("https://www.instagram.com/")
+        driver.get("https://www.instagram.com/accounts/login/?next=%2F&amp%3Bsource=mobile_nav")
         time.sleep(3)
 
         # Login
-        username_field = WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.NAME, "username"))
-        )
+        username_field = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.NAME, "username")))
         password_field = driver.find_element(By.NAME, "password")
         time.sleep(3.53)
         username_field.send_keys(username)
         time.sleep(1.59)
-        password_field.send_keys(password + Keys.ENTER)
+        password_field.send_keys(password)
+        time.sleep(1.2)
+        # submit_btn = driver.find_element(by=By.CSS_SELECTOR, value='div[data-anchor-id="replay"]')
+        # submit_btn.click()
+        submit_btn = driver.find_element(by=By.CSS_SELECTOR, value='button[type="submit"]')
+        submit_btn.click()
 
-        # Wait for login completion
-        WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(@aria-label, 'Home')]"))
-        )
+        # # Wait for login completion
+        # WebDriverWait(driver, 15).until(
+        #     EC.presence_of_element_located((By.CSS_SELECTOR, 'a[tabindex="0"]'))
+        # )
+        time.sleep(6)
 
         # Navigate directly to create page
         # driver.get("https://www.instagram.com/create")
         time.sleep(4)
+        create_btn = driver.find_element(by=By.CSS_SELECTOR, value='a[tabindex="0"]')
+        create_btn.click()
+        print('add')
+        time.sleep(6.2)
+        # post_btn = driver.find_element(by=By.CSS_SELECTOR, value='div[tabindex="0", role="button"]')
+        # post_btn.click()
 
         # Upload video
         file_input = WebDriverWait(driver, 15).until(
@@ -95,8 +105,10 @@ def post_reel_with_selenium(video_path, username, password, caption):
 
 # Usage
 post_reel_with_selenium(
-    video_path="A:\Python Development\Instagramm_bot\bydastann\2025-05-07_14-00-02_UTC.mp4",
+    video_path=r"C:\Users\User\Desktop\reels\2025-02-12_00-57-14_UTC.mp4",
     username="invideo_king_wonders",
     password="benben123!!",
     caption="Hi"
 )
+
+# <button class="x5yr21d  _aswp _aswq _aswu _asw_ _asx2" type="button">

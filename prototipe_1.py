@@ -3,6 +3,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 import os
+from dotenv import load_dotenv
 
 
 def download_reel(reel_url, download_dir):
@@ -20,6 +21,7 @@ def download_reel(reel_url, download_dir):
         download_geotags=False,
         download_comments=False,
         compress_json=False,
+        download_video_thumbnails=False,
         dirname_pattern=download_dir
     )
 
@@ -41,7 +43,8 @@ if __name__ == "__main__":
     if not re.match(r'https?://(www\.)?instagram\.com/(reels|p)/', reel_url):
         print("Invalid URL. Must be an Instagram Reel link.")
     else:
-        download_reel(reel_url, 'C:\Users\IL\Desktop\reels')
+        load_dotenv()
+        download_reel(reel_url, os.getenv('REELS_PATH'))
 
 import requests
 
