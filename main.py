@@ -10,7 +10,7 @@ if __name__ == '__main__':
         download_bot.download_reel(input('Link for reel: '))
     elif selection == 'p':
         post_bot = PostReel()
-        post_bot.post_reel()
+        post_bot.post_reel(input('path: '))
     else:
         print('Wrong selection')
         

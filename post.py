@@ -28,10 +28,11 @@ class PostReel:
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
         self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver.implicitly_wait(4)
 
         # User_account
         load_dotenv()
-        self.username = os.getenv("USERNAME")
+        self.username = os.getenv("USERNAME_INST")
         self.password = os.getenv("PASSWORD")
 
     def random_time(self):
@@ -39,23 +40,23 @@ class PostReel:
 
     def login(self):
         # Open Instagram
-        driver.get(
+        self.driver.get(
             "https://www.instagram.com/accounts/login/?next=%2F&amp%3Bsource=mobile_nav"
         )
         time.sleep(self.random_time())
-        username_field = WebDriverWait(driver, 15).until(
+        username_field = WebDriverWait(self.driver, 15).until(
             EC.presence_of_element_located((By.NAME, "username"))
         )
-        password_field = driver.find_element(By.NAME, "password")
+        password_field = self.driver.find_element(By.NAME, "password")
 
         time.sleep(self.random_time())
-        username_field.send_keys(username)
+        username_field.send_keys(self.username)
 
         time.sleep(self.random_time())
-        password_field.send_keys(password)
+        password_field.send_keys(self.password)
 
         time.sleep(self.random_time())
-        submit_btn = driver.find_element(
+        submit_btn = self.driver.find_element(
             by=By.CSS_SELECTOR, value='button[type="submit"]'
         )
         submit_btn.click()
@@ -63,53 +64,61 @@ class PostReel:
     def upload_reel(self, video_path):
         try:
             # Wait for main page
-            WebDriverWait(driver, 15).until(
+            WebDriverWait(self.driver, 15).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'a[tabindex="0"]'))
             )
 
             time.sleep(self.random_time())
-            create_btn = driver.find_element(
+            create_btn = self.driver.find_element(
                 by=By.CSS_SELECTOR, value='svg[aria-label="New post"]'
             )
             create_btn.click()
 
             # Uploading reel
             time.sleep(self.random_time() + 2)
-            file_input = WebDriverWait(driver, 15).until(
+            file_input = WebDriverWait(self.driver, 15).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='file']"))
             )
             file_input.send_keys(video_path)
 
+            time.sleep(self.random_time())
+            ok_btn = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, "//*[text()='OK']"))
+            )
+            ok_btn.click()
+
             time.sleep(self.random_time() + 5)
-            next_btn = WebDriverWait(driver, 10).until(
+            next_btn = WebDriverWait(self.driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
             )
             next_btn.click()
 
             time.sleep(self.random_time())
-            next_btn = WebDriverWait(driver, 10).until(
+            next_btn = WebDriverWait(self.driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
             )
             next_btn.click()
 
             time.sleep(self.random_time())
-            next_btn = WebDriverWait(driver, 10).until(
+            share_btn = WebDriverWait(self.driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, "//*[text()='Share']"))
             )
-            next_btn.click()
-
-            WebDriverWait(driver, 15).until(
+            share_btn.click()
+            print('waiting')
+            WebDriverWait(self.driver, 120).until(
                 EC.visibility_of_element_located(
                     (By.XPATH, "//*[text()='Your reel has been shared.']")
                 )
             )
+            time.sleep(5)
             print("Reel posted successfully!")
         except TimeoutException as e:
             print(f"Element not found: {e}")
             # Take screenshot for debugging
-            driver.save_screenshot("error_screenshot.png")
+            self.driver.save_screenshot("error_screenshot.png")
             print("Saved error screenshot to error_screenshot.png")
     
     def post_reel(self, video_path):
         self.login()
+        time.sleep(4)
         self.upload_reel(video_path)

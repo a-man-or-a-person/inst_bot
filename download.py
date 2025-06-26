@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 class DownloadReel:
     def __init__(self):
+        load_dotenv()
         os.makedirs(os.getenv("REELS_PATH"), exist_ok=True)
 
         self.loader = instaloader.Instaloader(
