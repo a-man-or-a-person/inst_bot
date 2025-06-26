@@ -62,36 +62,49 @@ def post_reel_with_selenium(video_path, username, password, caption):
             EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='file']"))
         )
         file_input.send_keys(video_path)
-
+        print('sleep')
         # Wait for video processing
         time.sleep(8)
-
+        print('wake')
         # Switch to Reel mode (using more reliable selector)
-        reel_button = WebDriverWait(driver, 15).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[contains(@class, '_ac38') and contains(., 'Reel') or contains(., 'Ролик')]"))
+        next_btn = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
         )
-        reel_button.click()
+        next_btn.click()
         time.sleep(4.32)
 
-        # Add caption
-        caption_box = WebDriverWait(driver, 15).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[@aria-label='Write a caption...' or @aria-label='Напишите подпись...']"))
+        next_btn = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
         )
-        caption_box.send_keys(caption)
-        time.sleep(2.4)
+        next_btn.click()
+        time.sleep(4.32)
 
-        # Post the reel
-        share_button = WebDriverWait(driver, 15).until(
-            EC.element_to_be_clickable((By.XPATH, "//div[contains(., 'Share') or contains(., 'Поделиться')]"))
+        next_btn = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[text()='Share']"))
         )
-        share_button.click()
+        next_btn.click()
+        time.sleep(10)
 
-        # Wait for completion
-        WebDriverWait(driver, 30).until(
-            EC.invisibility_of_element_located((By.XPATH, "//div[text()='Sharing...' or text()='Публикация...']"))
-        )
+
+
+        # # Add caption
+        # caption_box = WebDriverWait(driver, 15).until(
+        #     EC.element_to_be_clickable(
+        #         (By.XPATH, "//div[@aria-label='Write a caption...' or @aria-label='Напишите подпись...']"))
+        # )
+        # caption_box.send_keys(caption)
+        # time.sleep(2.4)
+        #
+        # # Post the reel
+        # share_button = WebDriverWait(driver, 15).until(
+        #     EC.element_to_be_clickable((By.XPATH, "//div[contains(., 'Share') or contains(., 'Поделиться')]"))
+        # )
+        # share_button.click()
+        #
+        # # Wait for completion
+        # WebDriverWait(driver, 30).until(
+        #     EC.invisibility_of_element_located((By.XPATH, "//div[text()='Sharing...' or text()='Публикация...']"))
+        # )
         print("Reel posted successfully!")
 
     except TimeoutException as e:
@@ -106,7 +119,7 @@ def post_reel_with_selenium(video_path, username, password, caption):
 
 # Usage
 post_reel_with_selenium(
-    video_path=r"C:\Users\User\Desktop\reels\2025-02-12_00-57-14_UTC.mp4",
+    video_path=r"C:\Users\User\Desktop\reels\2025-01-14_04-47-05_UTC.mp4",
     username="invideo_king_wonders",
     password="benben123!!",
     caption="Hi"
