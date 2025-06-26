@@ -49,7 +49,8 @@ def post_reel_with_selenium(video_path, username, password, caption):
         # Navigate directly to create page
         # driver.get("https://www.instagram.com/create")
         time.sleep(4)
-        create_btn = driver.find_element(by=By.CSS_SELECTOR, value='a[tabindex="0"]')
+        # create_btn = driver.find_element(by=By.CSS_SELECTOR, value='a[href="#"]')
+        create_btn = driver.find_element(by=By.CSS_SELECTOR, value='svg[aria-label="New post"]')
         create_btn.click()
         print('add')
         time.sleep(6.2)
@@ -58,7 +59,7 @@ def post_reel_with_selenium(video_path, username, password, caption):
 
         # Upload video
         file_input = WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@type='file']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='file']"))
         )
         file_input.send_keys(video_path)
 
