@@ -23,7 +23,8 @@ class DownloadReel:
 
     def download_reel(self, reel_url):
         # Extract shortcode from URL
-        shortcode = re.search(r"(?:reels|p)/([A-Za-z0-9_-]{10,12})", reel_url).group(1)
+        print(reel_url)
+        shortcode = re.search(r"(?:reels|p|reel)/([A-Za-z0-9_-]{10,12})", str(reel_url)).group(1)
 
         try:
             # Download the reel
@@ -33,15 +34,3 @@ class DownloadReel:
         except Exception as e:
             print(f"Error: {e}")
 
-
-# Example usage:
-if __name__ == "__main__":
-    # Get URL from user
-    reel_url = input("Enter Instagram Reel URL: ").strip()
-
-    # Validate URL format
-    if not re.match(r"https?://(www\.)?instagram\.com/(reels|p)/", reel_url):
-        print("Invalid URL. Must be an Instagram Reel link.")
-    else:
-        load_dotenv()
-        download_reel(reel_url, os.getenv("REELS_PATH"))

@@ -23,6 +23,7 @@ async def cmd_start(message: Message):
     await message.answer(f"Link recieved\n Processing...")
     # Get link
     reel_link = message.text.split("?")[0]
+    print(reel_link)
 
     # Download reel
     download_bot = DownloadReel()
