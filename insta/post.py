@@ -104,7 +104,7 @@ class PostReel:
                 EC.visibility_of_element_located((By.XPATH, "//*[text()='Share']"))
             )
             share_btn.click()
-            print('waiting')
+            print("waiting")
             WebDriverWait(self.driver, 120).until(
                 EC.visibility_of_element_located(
                     (By.XPATH, "//*[text()='Your reel has been shared.']")
@@ -117,7 +117,7 @@ class PostReel:
             # Take screenshot for debugging
             self.driver.save_screenshot("error_screenshot.png")
             print("Saved error screenshot to error_screenshot.png")
-    
+
     def post_reel(self, video_path):
         self.login()
         time.sleep(4)
