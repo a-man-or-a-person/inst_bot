@@ -6,7 +6,7 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 
 from insta.download import DownloadReel
-from insta.post import PostReel
+from insta.post import AsyncPostReel
 
 from DB.orm import add_link, get_links, create_tables, delete_link
 
@@ -52,15 +52,14 @@ async def cmd_start(message: Message):
 
     reel_link = reel_link[-1]
 
-    print(reel_link)
-
     # Download reel
     download_bot = DownloadReel()
     await download_bot.download_reel_async(reel_link)
 
     # Post reel
     load_dotenv()
-    post_bot = PostReel()
+    post_bot = AsyncPostReel()
+    await post_bot.init_driver()
     for video in [
         vid
         for vid in os.listdir(os.getenv("REELS_PATH"))

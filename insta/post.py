@@ -13,9 +13,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 class AsyncPostReel:
     def __init__(self):
-        # Initialize in main thread
+        # Initialize executor but NOT driver here
         self.executor = ThreadPoolExecutor(max_workers=1)
-        self.driver = None
+        self.driver = None  # Will be initialized later
 
         # User account
         load_dotenv()
@@ -23,7 +23,7 @@ class AsyncPostReel:
         self.password = os.getenv("PASSWORD")
 
     async def init_driver(self):
-        # Configure Chrome options in main thread
+        """Initialize driver asynchronously"""
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--lang=en-US")
         chrome_options.add_argument("--accept-lang=en")
@@ -32,8 +32,9 @@ class AsyncPostReel:
         )
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-        # Create driver in executor thread
         loop = asyncio.get_running_loop()
+
+        # Create driver in executor thread
         self.driver = await loop.run_in_executor(
             self.executor,
             lambda: webdriver.Chrome(options=chrome_options)
@@ -41,9 +42,15 @@ class AsyncPostReel:
         self.driver.implicitly_wait(4)
 
     async def random_delay(self):
+        """Non-blocking random delay"""
         await asyncio.sleep(random.random() + 2)
 
     async def login(self):
+        """Login to Instagram with driver initialization check"""
+        # Ensure driver is initialized
+        if not self.driver:
+            await self.init_driver()
+
         loop = asyncio.get_running_loop()
 
         # Open Instagram
@@ -89,6 +96,10 @@ class AsyncPostReel:
         await loop.run_in_executor(self.executor, submit_btn.click)
 
     async def upload_reel(self, video_path):
+        """Upload reel with driver initialization check"""
+        if not self.driver:
+            await self.init_driver()
+
         loop = asyncio.get_running_loop()
         try:
             # Wait for main page
@@ -184,6 +195,10 @@ class AsyncPostReel:
             print("Saved error screenshot to error_screenshot.png")
 
     async def post_reel(self, video_path):
+        """Main method to post reel with initialization checks"""
+        if not self.driver:
+            await self.init_driver()
+
         loop = asyncio.get_running_loop()
         try:
             # Check if already logged in
@@ -207,19 +222,15 @@ class AsyncPostReel:
             await loop.run_in_executor(self.executor, self.driver.quit)
         self.executor.shutdown()
 
-
-# Usage example
+    # Usage example
 async def main():
     poster = AsyncPostReel()
-    await poster.init_driver()
+    await poster.init_driver()  # Explicit initialization
 
     try:
         await poster.post_reel("path/to/your/reel.mp4")
-        # Can run other async tasks concurrently here
-        # await some_other_async_function()
     finally:
         await poster.close()
 
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    if __name__ == "__main__":
+        asyncio.run(main())
