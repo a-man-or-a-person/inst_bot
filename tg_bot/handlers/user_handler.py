@@ -56,7 +56,7 @@ async def cmd_start(message: Message):
 
     # Download reel
     download_bot = DownloadReel()
-    download_bot.download_reel(reel_link)
+    await download_bot.download_reel_async(reel_link)
 
     # Post reel
     load_dotenv()
@@ -67,7 +67,7 @@ async def cmd_start(message: Message):
         if vid.lower().endswith(".mp4")
     ]:
         full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
-        post_bot.post_reel(full_vid_path)
+        await post_bot.post_reel(full_vid_path)
         os.remove(full_vid_path)
         os.remove(full_vid_path.replace('.mp4', '.txt'))
         print(f"Done: {full_vid_path}")
