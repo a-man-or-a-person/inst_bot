@@ -40,6 +40,7 @@ async def cmd_start(message: Message):
         full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
         post_bot.post_reel(full_vid_path)
         os.remove(full_vid_path)
+        os.remove(full_vid_path.replace('.mp4', '.txt'))
         print(f"Done: {full_vid_path}")
 
     await message.answer(f"Done")

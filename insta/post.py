@@ -110,7 +110,10 @@ class PostReel:
                     (By.XPATH, "//*[text()='Your reel has been shared.']")
                 )
             )
-            time.sleep(5)
+            time.sleep(self.random_time())
+            exit_btn = self.driver.find_element(by=By.CSS_SELECTOR, value='div[class="x1qjc9v5 x9f619 x78zum5 xdt5ytf x1iyjqo2 xl56j7k"]')
+            exit_btn.click()
+    
             print("Reel posted successfully!")
         except TimeoutException as e:
             print(f"Element not found: {e}")
