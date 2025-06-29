@@ -111,9 +111,8 @@ class PostReel:
                 )
             )
             time.sleep(self.random_time())
-            exit_btn = self.driver.find_element(by=By.CSS_SELECTOR, value='div[class="x1qjc9v5 x9f619 x78zum5 xdt5ytf x1iyjqo2 xl56j7k"]')
-            exit_btn.click()
-    
+
+            self.driver.get('https://www.instagram.com/invideo_king_wonders/')
             print("Reel posted successfully!")
         except TimeoutException as e:
             print(f"Element not found: {e}")
@@ -122,6 +121,11 @@ class PostReel:
             print("Saved error screenshot to error_screenshot.png")
 
     def post_reel(self, video_path):
-        self.login()
-        time.sleep(4)
-        self.upload_reel(video_path)
+        try:
+            self.driver.find_element(by=By.CSS_SELECTOR, value='svg[aria-label="New post"]')
+            time.sleep(self.random_time())
+            self.upload_reel(video_path)
+        except Exception as e:
+            self.login()
+            time.sleep(self.random_time())
+            self.upload_reel(video_path)
