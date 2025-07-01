@@ -45,6 +45,21 @@ class AsyncPostReel:
         """Non-blocking random delay"""
         await asyncio.sleep(random.random() + 2)
 
+    async def check_session(self) -> bool:
+        try:
+            # Check if session was properly closed
+            if hasattr(self.driver, 'session_id') and self.driver.session_id is None:
+                return False
+
+
+            # Execute a safe command to verify responsiveness
+            self.driver.current_window_handle
+            print('DRIVER!!: ', 'good')
+            return True
+        except:
+            return False
+
+
     async def login(self):
         """Login to Instagram with driver initialization check"""
         # Ensure driver is initialized
@@ -182,7 +197,7 @@ class AsyncPostReel:
             await self.random_delay()
             await loop.run_in_executor(
                 self.executor,
-                lambda: self.driver.get('https://www.instagram.com/invideo_king_wonders/')
+                lambda: self.driver.get('https://www.instagram.com')
             )
             print("Reel posted successfully!")
 
@@ -196,9 +211,8 @@ class AsyncPostReel:
 
     async def post_reel(self, video_path):
         """Main method to post reel with initialization checks"""
-        if not self.driver:
+        if not self.driver or not(await self.check_session()):
             await self.init_driver()
-
         loop = asyncio.get_running_loop()
         try:
             # Check if already logged in
@@ -210,6 +224,7 @@ class AsyncPostReel:
             )
             await self.random_delay()
             await self.upload_reel(video_path)
+
         except Exception:
             await self.login()
             await self.random_delay()
@@ -222,15 +237,3 @@ class AsyncPostReel:
             await loop.run_in_executor(self.executor, self.driver.quit)
         self.executor.shutdown()
 
-    # Usage example
-async def main():
-    poster = AsyncPostReel()
-    await poster.init_driver()  # Explicit initialization
-
-    try:
-        await poster.post_reel("path/to/your/reel.mp4")
-    finally:
-        await poster.close()
-
-    if __name__ == "__main__":
-        asyncio.run(main())

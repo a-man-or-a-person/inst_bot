@@ -11,7 +11,7 @@ from insta.post import AsyncPostReel
 from DB.orm import add_link, get_links, create_tables, delete_link
 
 user_router = Router()
-
+post_bot = AsyncPostReel()
 
 @user_router.message(CommandStart())
 async def cmd_start(message: Message):
@@ -58,8 +58,7 @@ async def cmd_start(message: Message):
 
     # Post reel
     load_dotenv()
-    post_bot = AsyncPostReel()
-    await post_bot.init_driver()
+
     for video in [
         vid
         for vid in os.listdir(os.getenv("REELS_PATH"))
