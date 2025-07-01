@@ -51,14 +51,12 @@ class AsyncPostReel:
             if hasattr(self.driver, 'session_id') and self.driver.session_id is None:
                 return False
 
-
             # Execute a safe command to verify responsiveness
             self.driver.current_window_handle
             print('DRIVER!!: ', 'good')
             return True
         except:
             return False
-
 
     async def login(self):
         """Login to Instagram with driver initialization check"""
@@ -149,13 +147,16 @@ class AsyncPostReel:
             )
 
             await self.random_delay()
-            ok_btn = await loop.run_in_executor(
-                self.executor,
-                lambda: WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, "//*[text()='OK']"))
+            try:
+                ok_btn = await loop.run_in_executor(
+                    self.executor,
+                    lambda: WebDriverWait(self.driver, 10).until(
+                        EC.visibility_of_element_located((By.XPATH, "//*[text()='OK']"))
+                    )
                 )
-            )
-            await loop.run_in_executor(self.executor, ok_btn.click)
+                await loop.run_in_executor(self.executor, ok_btn.click)
+            except Exception as e:
+                print('No "OK" btn has been found')
 
             await self.random_delay()
             next_btn = await loop.run_in_executor(
@@ -211,7 +212,7 @@ class AsyncPostReel:
 
     async def post_reel(self, video_path):
         """Main method to post reel with initialization checks"""
-        if not self.driver or not(await self.check_session()):
+        if not self.driver or not (await self.check_session()):
             await self.init_driver()
         loop = asyncio.get_running_loop()
         try:
@@ -236,4 +237,3 @@ class AsyncPostReel:
             loop = asyncio.get_running_loop()
             await loop.run_in_executor(self.executor, self.driver.quit)
         self.executor.shutdown()
-
