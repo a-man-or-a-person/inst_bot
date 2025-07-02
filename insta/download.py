@@ -1,10 +1,10 @@
+import asyncio
 import os
 import re
-import asyncio
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 import instaloader
 from dotenv import load_dotenv
-from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 
 class DownloadReel:
@@ -32,7 +32,7 @@ class DownloadReel:
             # Add timeout to prevent hanging
             return await asyncio.wait_for(
                 loop.run_in_executor(self.executor, self._download_reel_sync, reel_url),
-                timeout=timeout
+                timeout=timeout,
             )
         except TimeoutError:
             return f"Timeout downloading {reel_url}"
@@ -41,7 +41,9 @@ class DownloadReel:
 
     def _download_reel_sync(self, reel_url: str):
         # Extract shortcode from URL
-        shortcode = re.search(r"(?:reels|p|reel)/([A-Za-z0-9_-]{10,12})", str(reel_url)).group(1)
+        shortcode = re.search(
+            r"(?:reels|p|reel)/([A-Za-z0-9_-]{10,12})", str(reel_url)
+        ).group(1)
 
         try:
             # Download the reel

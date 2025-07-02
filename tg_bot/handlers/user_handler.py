@@ -5,28 +5,28 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 from dotenv import load_dotenv
 
+from DB.orm import add_link, create_tables, delete_link, get_links
 from insta.download import DownloadReel
 from insta.post import AsyncPostReel
 
-from DB.orm import add_link, get_links, create_tables, delete_link
+from dotenv import load_dotenv
 
 user_router = Router()
 post_bot = AsyncPostReel()
+load_dotenv()
 
 @user_router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(
-        f"Приветствуем вас в нашем Боте! {message.from_user.first_name}"
+        f"Приветствуем вас в нашем Боте! \n Присылайте ссылки на смешные ролики из инстаграмма."
     )
 
 
 @user_router.message(F.text.contains("http"))
 async def cmd_start(message: Message):
-    await message.answer(f"Link recieved\n Processing...")
-    # Get link
     reel_link = message.text.split("?")[0]
     await add_link(message.from_user.id, message.from_user.first_name, reel_link)
-    await message.answer('Done')
+    await message.answer("Link added to DB. \n Thank you!")
 
 
 @user_router.message(F.text.contains("Links"))
@@ -41,7 +41,7 @@ async def cmd_start(message: Message):
     await message.answer(f"Dropping tables")
 
 
-@user_router.message(F.text == 'post')
+@user_router.message(F.text == "post")
 async def cmd_start(message: Message):
     await message.answer(f"Processing...")
     # Get link
@@ -55,25 +55,32 @@ async def cmd_start(message: Message):
     # Download reel
     download_bot = DownloadReel()
     await download_bot.download_reel_async(reel_link)
-    print('Downloaded_passing to post')
-    # Post reel
-    load_dotenv()
+    if os.getenv('TEST') == 'True':
+        await message.answer(f"Downloaded_passing to post")
 
+    # Post reel
     # for video in [
     #     vid
     #     for vid in os.listdir(os.getenv("REELS_PATH"))
     #     if vid.lower().endswith(".mp4")
     # ]:
-    video = [vid for vid in os.listdir(os.getenv("REELS_PATH")) if vid.lower().endswith(".mp4")][0]
-    print(video)
-    full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
-    print('Got path: ', full_vid_path)
-    await post_bot.post_reel(full_vid_path, test=False)
-    print('After post')
-    try:
-        os.remove(full_vid_path.replace('.mp4', '.txt'))
-    except Exception as e:
-        print('No txt file was found')
-    print(f"Done: {full_vid_path}")
+    video = [
+        vid
+        for vid in os.listdir(os.getenv("REELS_PATH"))
+        if vid.lower().endswith(".mp4")
+    ][0]
 
-    await message.answer(f"Done")
+    full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
+    res = await post_bot.post_reel(full_vid_path)
+    if res[0]:
+        try:
+            os.remove(full_vid_path.replace(".mp4", ".txt"))
+        except Exception as e:
+            if os.getenv('TEST') == 'True':
+                print("No txt file was found")
+        await message.answer(f"Done")
+    else:
+        await message.answer(f'Error: {res[1]}')
+
+
+

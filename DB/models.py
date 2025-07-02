@@ -11,3 +11,12 @@ class ReelLink(Base):
     user_id = mapped_column(BigInteger)
     user_name: Mapped[str] = mapped_column(nullable=False)
     link: Mapped[str] = mapped_column(nullable=False)
+
+
+class InstAcc(Base):
+    __tablename__ = "inst_acc"
+
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    username: Mapped[str] = mapped_column(nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    added_id: Mapped[str] = mapped_column(nullable=False)
