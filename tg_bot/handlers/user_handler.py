@@ -55,22 +55,25 @@ async def cmd_start(message: Message):
     # Download reel
     download_bot = DownloadReel()
     await download_bot.download_reel_async(reel_link)
-
+    print('Downloaded_passing to post')
     # Post reel
     load_dotenv()
 
-    for video in [
-        vid
-        for vid in os.listdir(os.getenv("REELS_PATH"))
-        if vid.lower().endswith(".mp4")
-    ]:
-        full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
-        await post_bot.post_reel(full_vid_path)
-        os.remove(full_vid_path)
-        try:
-            os.remove(full_vid_path.replace('.mp4', '.txt'))
-        except Exception as e:
-            raise 'No txt file was found'
-        print(f"Done: {full_vid_path}")
+    # for video in [
+    #     vid
+    #     for vid in os.listdir(os.getenv("REELS_PATH"))
+    #     if vid.lower().endswith(".mp4")
+    # ]:
+    video = [vid for vid in os.listdir(os.getenv("REELS_PATH")) if vid.lower().endswith(".mp4")][0]
+    print(video)
+    full_vid_path = os.path.join(os.getenv("REELS_PATH"), video)
+    print('Got path: ', full_vid_path)
+    await post_bot.post_reel(full_vid_path, test=False)
+    print('After post')
+    try:
+        os.remove(full_vid_path.replace('.mp4', '.txt'))
+    except Exception as e:
+        print('No txt file was found')
+    print(f"Done: {full_vid_path}")
 
     await message.answer(f"Done")

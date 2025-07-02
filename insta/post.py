@@ -108,7 +108,7 @@ class AsyncPostReel:
         )
         await loop.run_in_executor(self.executor, submit_btn.click)
 
-    async def upload_reel(self, video_path):
+    async def upload_reel(self, video_path, first=True):
         """Upload reel with driver initialization check"""
         if not self.driver:
             await self.init_driver()
@@ -116,18 +116,18 @@ class AsyncPostReel:
         loop = asyncio.get_running_loop()
         try:
             # Wait for main page
-            await loop.run_in_executor(
-                self.executor,
-                lambda: WebDriverWait(self.driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a[tabindex="0"]'))
-                )
-            )
+            # await loop.run_in_executor(
+            #     self.executor,
+            #     lambda: WebDriverWait(self.driver, 15).until(
+            #         EC.presence_of_element_located((By.CSS_SELECTOR, 'svg[aria-label="New post"]'))
+            #     )
+            # )
 
             await self.random_delay()
             create_btn = await loop.run_in_executor(
                 self.executor,
-                lambda: self.driver.find_element(
-                    by=By.CSS_SELECTOR, value='svg[aria-label="New post"]'
+                lambda: WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'svg[aria-label="New post"]'))
                 )
             )
             await loop.run_in_executor(self.executor, create_btn.click)
@@ -145,9 +145,10 @@ class AsyncPostReel:
                 self.executor,
                 lambda: file_input.send_keys(os.path.abspath(video_path))
             )
-
+            print('Before OK')
             await self.random_delay()
-            try:
+            if first:
+                print('OK')
                 ok_btn = await loop.run_in_executor(
                     self.executor,
                     lambda: WebDriverWait(self.driver, 10).until(
@@ -155,35 +156,48 @@ class AsyncPostReel:
                     )
                 )
                 await loop.run_in_executor(self.executor, ok_btn.click)
+            print('Before Next1')
+            await self.random_delay()
+            next_btn = await loop.run_in_executor(
+                self.executor,
+                lambda: WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
+                )
+            )
+            await loop.run_in_executor(self.executor, next_btn.click)
+            print('Before Next2')
+            await self.random_delay()
+            next_btn = await loop.run_in_executor(
+                self.executor,
+                lambda: WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
+                )
+            )
+            await loop.run_in_executor(self.executor, next_btn.click)
+
+            await self.random_delay()
+            print('Hi')
+            await self.random_delay()
+            print('Before Share')
+            try:
+                print('TRY')
+                share_btn = await loop.run_in_executor(
+                    self.executor,
+                    lambda: WebDriverWait(self.driver, 10).until(
+                        EC.visibility_of_element_located((By.XPATH, "//*[text()='Share']"))
+                    )
+                )
+
+                await loop.run_in_executor(self.executor, share_btn.click)
             except Exception as e:
-                print('No "OK" btn has been found')
-
-            await self.random_delay()
-            next_btn = await loop.run_in_executor(
-                self.executor,
-                lambda: WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
+                print('!!ERROR!!', e)
+                share_btn = await loop.run_in_executor(
+                    self.executor,
+                    lambda: WebDriverWait(self.driver, 10).until(
+                        EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[class="x9f619 xjbqb8w x78zum5 x15mokao x1ga7v0g x16uus16 xbiv7yw xyamay9 xv54qhq x1l90r2v xf7dkkf x1n2onr6 x1plvlek xryxfnj x1c4vz4f x2lah0s xdt5ytf xqjyukv x1qjc9v5 x1oa3qoh x1nhvcw1"]'))
+                    )
                 )
-            )
-            await loop.run_in_executor(self.executor, next_btn.click)
-
-            await self.random_delay()
-            next_btn = await loop.run_in_executor(
-                self.executor,
-                lambda: WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, "//*[text()='Next']"))
-                )
-            )
-            await loop.run_in_executor(self.executor, next_btn.click)
-
-            await self.random_delay()
-            share_btn = await loop.run_in_executor(
-                self.executor,
-                lambda: WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, "//*[text()='Share']"))
-                )
-            )
-            await loop.run_in_executor(self.executor, share_btn.click)
+                await loop.run_in_executor(self.executor, share_btn.click)
 
             print("Waiting for sharing to complete...")
             await loop.run_in_executor(
@@ -201,6 +215,7 @@ class AsyncPostReel:
                 lambda: self.driver.get('https://www.instagram.com')
             )
             print("Reel posted successfully!")
+            os.remove(video_path)
 
         except TimeoutException as e:
             print(f"Element not found: {e}")
@@ -210,7 +225,7 @@ class AsyncPostReel:
             )
             print("Saved error screenshot to error_screenshot.png")
 
-    async def post_reel(self, video_path):
+    async def post_reel(self, video_path, test=False):
         """Main method to post reel with initialization checks"""
         if not self.driver or not (await self.check_session()):
             await self.init_driver()
@@ -224,7 +239,7 @@ class AsyncPostReel:
                 )
             )
             await self.random_delay()
-            await self.upload_reel(video_path)
+            await self.upload_reel(video_path, first=False)
 
         except Exception:
             await self.login()
