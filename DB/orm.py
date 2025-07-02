@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from DB.database import Base, async_engine, async_session_factory
-from DB.models import ReelLink
+from DB.models import InstAcc, ReelLink
 
 
 async def add_link(user_id, user_name, link):
@@ -37,3 +37,19 @@ async def create_tables():
         # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
         await conn.commit()
+
+
+async def add_ints_acc(data: dict, tg_id) -> None:
+    async with async_session_factory() as session:
+        new_acc = InstAcc(
+            username=data["username"], password=data["password"], added_id=tg_id
+        )
+        session.add(new_acc)
+        await session.commit()
+
+
+async def get_inst_accounts() -> list:
+    async with async_session_factory() as session:
+        accounts = select(InstAcc.id, InstAcc.username).select_from(InstAcc)
+        accounts = await session.execute(accounts)
+        return list(accounts)

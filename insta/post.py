@@ -52,11 +52,11 @@ class AsyncPostReel:
 
             # Execute a safe command to verify responsiveness
             self.driver.current_window_handle
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print("DRIVER: is_active")
             return True
         except:
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print("DRIVER: is_down")
             return False
 
@@ -108,7 +108,7 @@ class AsyncPostReel:
             ),
         )
         await loop.run_in_executor(self.executor, submit_btn.click)
-        if os.getenv('TEST') == 'True':
+        if os.getenv("TEST") == "True":
             print("LOGIN: finished")
 
     async def upload_reel(self, video_path, first=True) -> tuple:
@@ -184,7 +184,7 @@ class AsyncPostReel:
                 )
                 await loop.run_in_executor(self.executor, share_btn.click)
             except Exception as e:
-                if os.getenv('TEST') == 'True':
+                if os.getenv("TEST") == "True":
                     print(f"SHARE: failed: {e}")
                     return False, f"SHARE: failed: {e}"
                 # share_btn = await loop.run_in_executor(
@@ -198,8 +198,7 @@ class AsyncPostReel:
                 #
                 # await loop.run_in_executor(self.executor, share_btn.click)
 
-
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print("Waiting for sharing to complete...")
 
             await loop.run_in_executor(
@@ -215,25 +214,25 @@ class AsyncPostReel:
             await loop.run_in_executor(
                 self.executor, lambda: self.driver.get("https://www.instagram.com")
             )
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print("Reel posted successfully!")
 
             # Deleting video
             os.remove(video_path)
-            return True, 'OK'
+            return True, "OK"
 
         except TimeoutException as e:
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print(f"Element not found: {e}")
             await loop.run_in_executor(
                 self.executor,
                 lambda: self.driver.save_screenshot("error_screenshot.png"),
             )
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print("Saved error screenshot to error_screenshot.png")
 
         except Exception as e:
-            if os.getenv('TEST') == 'True':
+            if os.getenv("TEST") == "True":
                 print(f"POST FAILED: {e}")
             return False, f"POST FAILED: {e}"
 
