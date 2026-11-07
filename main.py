@@ -87,11 +87,12 @@ def scrape_instagram_reel(reel_url, username, password, output_path="reel.mp4"):
         driver.quit()
 
 
-# Usage
-scrape_instagram_reel(
-    # reel_url="https://www.instagram.com/reel/Cs8V8d2gQdE/",
-    reel_url="https://www.instagram.com/reels/DJq5DRiM1QR/",
-    username="invideo_king_wonders",
-    password="benben123!",
-    output_path="instagram_reel.mp4"
-)
+if __name__ == "__main__":
+    # Usage
+    scrape_instagram_reel(
+        # reel_url=os.environ["REEL_URL"],
+        reel_url=os.environ["REEL_URL"],
+        username=os.environ["INSTAGRAM_USERNAME"],
+        password=os.environ["INSTAGRAM_PASSWORD"],
+        output_path="instagram_reel.mp4"
+    )

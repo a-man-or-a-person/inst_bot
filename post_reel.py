@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -41,10 +42,11 @@ def post_reel_with_selenium(video_path, username, password, caption):
     driver.quit()
 
 
-# Usage
-post_reel_with_selenium(
-    video_path="A:\Python Development\Instagramm_bot\bydastann\2025-05-07_14-00-02_UTC.mp4",
-    username="invideo_king_wonders",
-    password="benben123!!",
-    caption="Hi"
-)
+if __name__ == "__main__":
+    # Usage
+    post_reel_with_selenium(
+        video_path=os.environ["VIDEO_PATH"],
+        username=os.environ["INSTAGRAM_USERNAME"],
+        password=os.environ["INSTAGRAM_PASSWORD"],
+        caption="Hi"
+    )

@@ -161,3 +161,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 .vscode/
+
+# Local browser artifacts
+error_screenshot.png
+*.mp4
+*.session
