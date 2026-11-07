@@ -1,206 +1,37 @@
-# Instagram Bot - Reel Downloader & Uploader
+# Instagram browser automation experiments
 
-An automated bot for downloading Instagram reels and uploading content to Instagram using Selenium WebDriver.
+Python prototypes for downloading and uploading Reels with Selenium and Instaloader.
 
-## Project Overview
+## Status
 
-This project provides Python-based automation tools for Instagram content management:
-- **Download Instagram Reels** - Extract and save reels with metadata preservation
-- **Upload Reels** - Automate the process of posting reels to Instagram accounts
-- **Browser Automation** - Uses Selenium WebDriver with Chrome and Firefox support
-- **Tor Network Support** - Privacy-focused downloading with Tor Browser integration
+Experimental, machine-dependent scripts. Browser selectors, login challenges and upload flows can change. This is a learning project, not a supported publishing service.
 
-## Features
+## Setup
 
-### Main Capabilities
-- 🎬 Download Instagram reels in high quality
-- 📱 Support for both desktop and mobile browser emulation
-- 🔒 Optional Tor Browser integration for anonymous downloads
-- 🚀 Automated reel uploading with captions
-- 🔐 Secure credential handling
-- ⏱️ Smart wait times and error handling
+Create and activate a Python virtual environment, then install the existing dependency file:
 
-## Project Structure
-
-```
-inst_bot/
-├── main.py                 # Download Instagram reels with Tor Browser
-├── post_reel.py           # Upload reels using Chrome browser
-├── post_reel_phone.py     # Upload reels with mobile device emulation
-├── prototipe_1.py         # Prototype version
-├── test.py                # Testing module
-├── requrements.txt        # Project dependencies
-├── error_screenshot.png   # Error debugging screenshot
-└── .gitignore            # Git ignore rules
+```sh
+python -m pip install -r requrements.txt
 ```
 
-## Key Scripts
+Install the browser and driver required by the script. `main.py` currently requires editing the Tor Browser executable path and a running SOCKS proxy at localhost:9150.
 
-### 1. **main.py** - Download Reels with Tor
-Downloads Instagram reels anonymously using Tor Browser
-```python
-scrape_instagram_reel(
-    reel_url="https://www.instagram.com/reels/DJq5DRiM1QR/",
-    username="your_username",
-    password="your_password",
-    output_path="instagram_reel.mp4"
-)
-```
+## Run explicitly
 
-### 2. **post_reel.py** - Upload Reels (Desktop)
-Posts reels to Instagram using desktop browser
-- Handles login automation
-- Supports custom captions
-- Includes proper wait times for page loading
+Set these environment variables in your shell; the scripts do not automatically load a .env file:
 
-### 3. **post_reel_phone.py** - Upload Reels (Mobile Emulation)
-Advanced version with mobile device emulation
-- Emulates mobile browser environment
-- Better compatibility with Instagram's mobile UI
-- Includes error handling and screenshot capture
+- `INSTAGRAM_USERNAME` and `INSTAGRAM_PASSWORD`: your own account credentials.
+- `REEL_URL`: source URL for `python main.py`.
+- `VIDEO_PATH`: absolute local video path for `python post_reel.py` or `python post_reel_phone.py`.
 
-## Dependencies
+Running an upload script can publish a video. Importing these three modules does not run their examples.
+The caption in the examples is currently fixed; the mobile prototype does not reliably apply captions.
 
-The project uses the following key libraries:
+`prototipe_1.py` is an alternate interactive download experiment using `REELS_PATH`.
 
-- **selenium** (v4.33.0) - Browser automation
-- **requests** (v2.32.3) - HTTP client
-- **instaloader** (v4.14.1) - Instagram content loading
-- **webdriver-manager** (v4.0.2) - WebDriver management
-- **python-dotenv** (v1.1.0) - Environment variables
-- **beautifulsoup4** (v4.13.4) - HTML parsing
+## Security and limitations
 
-Full dependency list in `requrements.txt`
-
-## Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/a-man-or-a-person/inst_bot.git
-cd inst_bot
-```
-
-2. **Install dependencies**
-```bash
-pip install -r requrements.txt
-```
-
-3. **Download WebDrivers**
-- ChromeDriver for Chrome browser automation
-- Firefox/Tor Browser for Tor-based downloads
-
-## Configuration
-
-### System-Specific Paths
-
-Update the following paths in the scripts based on your system:
-
-**For Tor Browser (main.py):**
-```python
-tor_binary_path = r"A:\Tor_browzer\Tor Browser\Browser\firefox.exe"  # Windows
-tor_profile_path = r"A:\Tor_browzer\Tor Browser\Browser\TorBrowser\Data\Browser\Caches\profile.default"  # Windows
-```
-
-**For Video Upload (post_reel.py):**
-```python
-video_path = r"A:\Python Development\Instagramm_bot\bydastann\video.mp4"
-```
-
-## Usage Examples
-
-### Download a Reel
-```python
-from main import scrape_instagram_reel
-
-scrape_instagram_reel(
-    reel_url="https://www.instagram.com/reels/YOUR_REEL_ID/",
-    username="your_instagram_username",
-    password="your_instagram_password",
-    output_path="downloaded_reel.mp4"
-)
-```
-
-### Upload a Reel (Desktop)
-```python
-from post_reel import post_reel_with_selenium
-
-post_reel_with_selenium(
-    video_path="path/to/your/video.mp4",
-    username="your_instagram_username",
-    password="your_instagram_password",
-    caption="Your caption here #hashtag"
-)
-```
-
-### Upload a Reel (Mobile Emulated)
-```python
-from post_reel_phone import post_reel_with_selenium
-
-post_reel_with_selenium(
-    video_path="path/to/your/video.mp4",
-    username="your_instagram_username",
-    password="your_instagram_password",
-    caption="Your caption here #hashtag"
-)
-```
-
-## Requirements
-
-- Python 3.7+
-- Google Chrome browser (for desktop upload)
-- Firefox/Tor Browser (for anonymous download)
-- ChromeDriver and GeckoDriver
-- Valid Instagram account credentials
-
-## Troubleshooting
-
-### Common Issues
-
-**1. Element Not Found Error**
-- Screenshot saved as `error_screenshot.png`
-- Check Instagram UI changes
-- Update XPath selectors
-
-**2. Timeout Errors**
-- Increase wait times in the script
-- Check internet connection
-- Verify Tor connection status
-
-**3. Login Failures**
-- Verify credentials
-- Check for Instagram login restrictions
-- Disable 2FA temporarily
-- Check IP restrictions
-
-**4. WebDriver Issues**
-- Ensure WebDriver versions match browser versions
-- Update with webdriver-manager
-- Clear browser cache
-
-## Security Considerations
-
-⚠️ **Important:**
-- Never commit credentials to version control
-- Use environment variables for sensitive data
-- Consider using .env files with python-dotenv
-- Be aware of Instagram's Terms of Service
-- Use responsibly and respect rate limits
-
-## Notes
-
-- Tor Browser download: Privacy-focused automation
-- Mobile emulation: Better compatibility with Instagram's UI
-- Error screenshots: Debugging aid for troubleshooting
-- Extended wait times: Necessary for Tor network latency
-
-## Author
-
-Created by: a-man-or-a-person
-
-## License
-
-This project is provided as-is for educational and personal use.
-
-## Disclaimer
-
-This tool is designed for automation purposes. Users are responsible for ensuring their use complies with Instagram's Terms of Service and applicable laws. Unauthorized access or scraping may violate Instagram's policies.
+Keep credentials, cookies, browser profiles, downloaded media and screenshots outside Git.
+Previously committed credentials must be rotated and active sessions reviewed. A source change does not remove earlier Git objects.
+No live account operations or end-to-end browser checks were performed for this cleanup.
+`test.py` compares two strings; it is not an automated browser test.
