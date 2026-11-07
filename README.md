@@ -1,3 +1,5 @@
+![BROWSER AUTOMATION](docs/banner.svg)
+
 # Instagram browser automation experiments
 
 Python prototypes for downloading and uploading Reels with Selenium and Instaloader.
